@@ -449,6 +449,7 @@ config CPU_FREQ_GOV_BLU_ACTIVE
 
 	  If in doubt, say N.
 
+
 config CPU_FREQ_GOV_IRONACTIVE
 	tristate "'ironactive' cpufreq policy governor"
 	help
@@ -493,6 +494,13 @@ config CPU_BOOST
 	  - Migration of important threads from one CPU to another.
 
 	  If in doubt, say N.
+
+config FINGERPRINT_BOOST
+	bool "Fingerprint Boost"
+	default y
+	help
+	  Boosts available CPUs to max frequency on fingerprint sensor input
+
 
 if X86
 source "drivers/cpufreq/Kconfig.x86"
