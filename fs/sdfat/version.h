@@ -22,4 +22,8 @@
 /*  PURPOSE : sdFAT File Manager                                        */
 /*                                                                      */
 /************************************************************************/
+<<<<<<< HEAD
 #define SDFAT_VERSION	"2.0.6-lineage"
+=======
+#define SDFAT_VERSION	"1.4.16"
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver

@@ -94,7 +94,11 @@ typedef struct __AMAP_T {
 	int fclu_hint;			/* maximum # of free clusters in an AU */
 
 	/* Hot AU list */
+<<<<<<< HEAD
 	unsigned int total_fclu_hot;	/* Free clusters in hot list */
+=======
+	int total_fclu_hot;		/* Free clusters in hot list */
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	struct slist_head slist_hot;	/* Hot AU list */
 
 	/* Ignored AU list */

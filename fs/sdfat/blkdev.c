@@ -106,12 +106,20 @@ s32 bdev_check_bdi_valid(struct super_block *sb)
 
 
 /* Make a readahead request */
+<<<<<<< HEAD
 s32 bdev_readahead(struct super_block *sb, u64 secno, u64 num_secs)
+=======
+s32 bdev_readahead(struct super_block *sb, u32 secno, u32 num_secs)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 	u32 sects_per_page = (PAGE_SIZE >> sb->s_blocksize_bits);
 	struct blk_plug plug;
+<<<<<<< HEAD
 	u64 i;
+=======
+	u32 i;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 	if (!fsi->bd_opened)
 		return -EIO;
@@ -120,14 +128,22 @@ s32 bdev_readahead(struct super_block *sb, u64 secno, u64 num_secs)
 	for (i = 0; i < num_secs; i++) {
 		if (i && !(i & (sects_per_page - 1)))
 			blk_flush_plug(current);
+<<<<<<< HEAD
 		sb_breadahead(sb, (sector_t)(secno + i));
+=======
+		sb_breadahead(sb, secno + i);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	}
 	blk_finish_plug(&plug);
 
 	return 0;
 }
 
+<<<<<<< HEAD
 s32 bdev_mread(struct super_block *sb, u64 secno, struct buffer_head **bh, u64 num_secs, s32 read)
+=======
+s32 bdev_mread(struct super_block *sb, u32 secno, struct buffer_head **bh, u32 num_secs, s32 read)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 	u8 blksize_bits = sb->s_blocksize_bits;
@@ -145,9 +161,15 @@ s32 bdev_mread(struct super_block *sb, u64 secno, struct buffer_head **bh, u64 n
 	brelse(*bh);
 
 	if (read)
+<<<<<<< HEAD
 		*bh = __bread(sb->s_bdev, (sector_t)secno, num_secs << blksize_bits);
 	else
 		*bh = __getblk(sb->s_bdev, (sector_t)secno, num_secs << blksize_bits);
+=======
+		*bh = __bread(sb->s_bdev, secno, num_secs << blksize_bits);
+	else
+		*bh = __getblk(sb->s_bdev, secno, num_secs << blksize_bits);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 	/* read successfully */
 	if (*bh)
@@ -165,9 +187,15 @@ s32 bdev_mread(struct super_block *sb, u64 secno, struct buffer_head **bh, u64 n
 	return -EIO;
 }
 
+<<<<<<< HEAD
 s32 bdev_mwrite(struct super_block *sb, u64 secno, struct buffer_head *bh, u64 num_secs, s32 sync)
 {
 	u64 count;
+=======
+s32 bdev_mwrite(struct super_block *sb, u32 secno, struct buffer_head *bh, u32 num_secs, s32 sync)
+{
+	s32 count;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	struct buffer_head *bh2;
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 #ifdef CONFIG_SDFAT_DBG_IOCTL
@@ -189,7 +217,11 @@ s32 bdev_mwrite(struct super_block *sb, u64 secno, struct buffer_head *bh, u64 n
 	} else {
 		count = num_secs << sb->s_blocksize_bits;
 
+<<<<<<< HEAD
 		bh2 = __getblk(sb->s_bdev, (sector_t)secno, count);
+=======
+		bh2 = __getblk(sb->s_bdev, secno, count);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 		if (!bh2)
 			goto no_bh;
@@ -239,39 +271,63 @@ s32 bdev_sync_all(struct super_block *sb)
 /*
  *  Sector Read/Write Functions
  */
+<<<<<<< HEAD
 s32 read_sect(struct super_block *sb, u64 sec, struct buffer_head **bh, s32 read)
+=======
+s32 read_sect(struct super_block *sb, u32 sec, struct buffer_head **bh, s32 read)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 
 	BUG_ON(!bh);
 	if ((sec >= fsi->num_sectors) && (fsi->num_sectors > 0)) {
 		sdfat_fs_error_ratelimit(sb,
+<<<<<<< HEAD
 				"%s: out of range (sect:%llu)", __func__, sec);
+=======
+				"%s: out of range (sect:%u)", __func__, sec);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		return -EIO;
 	}
 
 	if (bdev_mread(sb, sec, bh, 1, read)) {
 		sdfat_fs_error_ratelimit(sb,
+<<<<<<< HEAD
 				"%s: I/O error (sect:%llu)", __func__, sec);
+=======
+				"%s: I/O error (sect:%u)", __func__, sec);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		return -EIO;
 	}
 
 	return 0;
 }
 
+<<<<<<< HEAD
 s32 write_sect(struct super_block *sb, u64 sec, struct buffer_head *bh, s32 sync)
+=======
+s32 write_sect(struct super_block *sb, u32 sec, struct buffer_head *bh, s32 sync)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 
 	BUG_ON(!bh);
 	if ((sec >= fsi->num_sectors) && (fsi->num_sectors > 0)) {
 		sdfat_fs_error_ratelimit(sb,
+<<<<<<< HEAD
 				"%s: out of range (sect:%llu)", __func__, sec);
+=======
+				"%s: out of range (sect:%u)", __func__, sec);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		return -EIO;
 	}
 
 	if (bdev_mwrite(sb, sec, bh, 1, sync)) {
+<<<<<<< HEAD
 		sdfat_fs_error_ratelimit(sb, "%s: I/O error (sect:%llu)",
+=======
+		sdfat_fs_error_ratelimit(sb, "%s: I/O error (sect:%u)",
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 						__func__, sec);
 		return -EIO;
 	}
@@ -279,19 +335,31 @@ s32 write_sect(struct super_block *sb, u64 sec, struct buffer_head *bh, s32 sync
 	return 0;
 }
 
+<<<<<<< HEAD
 s32 read_msect(struct super_block *sb, u64 sec, struct buffer_head **bh, u64 num_secs, s32 read)
+=======
+s32 read_msect(struct super_block *sb, u32 sec, struct buffer_head **bh, s32 num_secs, s32 read)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 
 	BUG_ON(!bh);
 	if (((sec+num_secs) > fsi->num_sectors) && (fsi->num_sectors > 0)) {
+<<<<<<< HEAD
 		sdfat_fs_error_ratelimit(sb, "%s: out of range(sect:%llu len:%llu)",
+=======
+		sdfat_fs_error_ratelimit(sb, "%s: out of range(sect:%u len:%d)",
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 						__func__, sec, num_secs);
 		return -EIO;
 	}
 
 	if (bdev_mread(sb, sec, bh, num_secs, read)) {
+<<<<<<< HEAD
 		sdfat_fs_error_ratelimit(sb, "%s: I/O error (sect:%llu len:%llu)",
+=======
+		sdfat_fs_error_ratelimit(sb, "%s: I/O error (sect:%u len:%d)",
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 						__func__, sec, num_secs);
 		return -EIO;
 	}
@@ -299,20 +367,32 @@ s32 read_msect(struct super_block *sb, u64 sec, struct buffer_head **bh, u64 num
 	return 0;
 }
 
+<<<<<<< HEAD
 s32 write_msect(struct super_block *sb, u64 sec, struct buffer_head *bh, u64 num_secs, s32 sync)
+=======
+s32 write_msect(struct super_block *sb, u32 sec, struct buffer_head *bh, s32 num_secs, s32 sync)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 
 	BUG_ON(!bh);
 	if (((sec+num_secs) > fsi->num_sectors) && (fsi->num_sectors > 0)) {
+<<<<<<< HEAD
 		sdfat_fs_error_ratelimit(sb, "%s: out of range(sect:%llu len:%llu)",
+=======
+		sdfat_fs_error_ratelimit(sb, "%s: out of range(sect:%u len:%d)",
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 						__func__, sec, num_secs);
 		return -EIO;
 	}
 
 
 	if (bdev_mwrite(sb, sec, bh, num_secs, sync)) {
+<<<<<<< HEAD
 		sdfat_fs_error_ratelimit(sb, "%s: I/O error (sect:%llu len:%llu)",
+=======
+		sdfat_fs_error_ratelimit(sb, "%s: I/O error (sect:%u len:%d)",
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 						__func__, sec, num_secs);
 		return -EIO;
 	}
@@ -340,11 +420,19 @@ static inline s32 __blkdev_sync_bhs(struct buffer_head **bhs, s32 nr_bhs)
 	return err;
 }
 
+<<<<<<< HEAD
 static inline s32 __buffer_zeroed(struct super_block *sb, u64 blknr, u64 num_secs)
 {
 	struct buffer_head *bhs[MAX_BUF_PER_PAGE];
 	s32 nr_bhs = MAX_BUF_PER_PAGE;
 	u64 last_blknr = blknr + num_secs;
+=======
+static inline s32 __buffer_zeroed(struct super_block *sb, u32 blknr, s32 num_secs)
+{
+	struct buffer_head *bhs[MAX_BUF_PER_PAGE];
+	s32 nr_bhs = MAX_BUF_PER_PAGE;
+	u32 last_blknr = blknr + num_secs;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	s32 err, i, n;
 	struct blk_plug plug;
 
@@ -352,7 +440,11 @@ static inline s32 __buffer_zeroed(struct super_block *sb, u64 blknr, u64 num_sec
 	n = 0;
 	blk_start_plug(&plug);
 	while (blknr < last_blknr) {
+<<<<<<< HEAD
 		bhs[n] = sb_getblk(sb, (sector_t)blknr);
+=======
+		bhs[n] = sb_getblk(sb, blknr);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		if (!bhs[n]) {
 			err = -ENOMEM;
 			blk_finish_plug(&plug);
@@ -389,19 +481,31 @@ static inline s32 __buffer_zeroed(struct super_block *sb, u64 blknr, u64 num_sec
 	return 0;
 
 error:
+<<<<<<< HEAD
 	EMSG("%s: failed zeroed sect %llu\n", __func__, blknr);
+=======
+	EMSG("%s: failed zeroed sect %u\n", __func__, blknr);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	for (i = 0; i < n; i++)
 		bforget(bhs[i]);
 
 	return err;
 }
 
+<<<<<<< HEAD
 s32 write_msect_zero(struct super_block *sb, u64 sec, u64 num_secs)
+=======
+s32 write_msect_zero(struct super_block *sb, u32 sec, s32 num_secs)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 
 	if (((sec+num_secs) > fsi->num_sectors) && (fsi->num_sectors > 0)) {
+<<<<<<< HEAD
 		sdfat_fs_error_ratelimit(sb, "%s: out of range(sect:%llu len:%llu)",
+=======
+		sdfat_fs_error_ratelimit(sb, "%s: out of range(sect:%u len:%d)",
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 						__func__, sec, num_secs);
 		return -EIO;
 	}

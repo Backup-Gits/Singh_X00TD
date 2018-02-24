@@ -68,9 +68,12 @@
 /* skip iterating emit_dots when dir is empty */
 #define ITER_POS_FILLED_DOTS	(2)
 
+<<<<<<< HEAD
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4,8,0)
 #define current_time(x)	(CURRENT_TIME_SEC)
 #endif
+=======
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 /* type index declare at sdfat.h */
 const char *FS_TYPE_STR[] = {
 	"auto",
@@ -81,7 +84,10 @@ const char *FS_TYPE_STR[] = {
 static struct kset *sdfat_kset;
 static struct kmem_cache *sdfat_inode_cachep;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 static int sdfat_default_codepage = CONFIG_SDFAT_DEFAULT_CODEPAGE;
 static char sdfat_default_iocharset[] = CONFIG_SDFAT_DEFAULT_IOCHARSET;
 static const char sdfat_iocharset_with_utf8[] = "iso8859-1";
@@ -203,6 +209,7 @@ static inline unsigned long __sdfat_init_name_hash(const struct dentry *unused)
 }
 #endif
 
+<<<<<<< HEAD
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 4, 21)
        /* EMPTY */
@@ -210,10 +217,19 @@ static inline unsigned long __sdfat_init_name_hash(const struct dentry *unused)
 static inline void inode_lock(struct inode *inode)
 {
 	       mutex_lock(&inode->i_mutex);
+=======
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 4, 21)
+	/* EMPTY */
+#else /* LINUX_VERSION_CODE < KERNEL_VERSION(4, 4, 21) */
+static inline void inode_lock(struct inode *inode)
+{
+	mutex_lock(&inode->i_mutex);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 }
 
 static inline void inode_unlock(struct inode *inode)
 {
+<<<<<<< HEAD
 	       mutex_unlock(&inode->i_mutex);
 }
 #endif
@@ -227,6 +243,16 @@ static void sdfat_writepage_end_io(struct bio *bio)
 #else /* LINUX_VERSION_CODE < KERNEL_VERSION(4, 13, 0) */
 	__sdfat_writepage_end_io(bio, bio->bi_error);
 #endif
+=======
+	mutex_unlock(&inode->i_mutex);
+}
+#endif
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 3, 0)
+static void sdfat_writepage_end_io(struct bio *bio)
+{
+	__sdfat_writepage_end_io(bio, bio->bi_error);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 }
 #else /* LINUX_VERSION_CODE < KERNEL_VERSION(4, 3, 0) */
 static void sdfat_writepage_end_io(struct bio *bio, int err)
@@ -1719,7 +1745,11 @@ sdfat_ioctl_defrag_req(
 
 	dfr_debug("IOC_DFR_REQ started (mode %d, nr_req %d)", head.mode, len - 1);
 	if (get_order(len * sizeof(struct defrag_chunk_info)) > MAX_ORDER) {
+<<<<<<< HEAD
 		dfr_debug("len %d, sizeof(struct defrag_chunk_info) %lu, MAX_ORDER %d",
+=======
+		dfr_debug("len %u, sizeof(struct defrag_chunk_info) %lu, MAX_ORDER %d",
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 				len, sizeof(struct defrag_chunk_info), MAX_ORDER);
 		err = -EINVAL;
 		goto error;
@@ -2248,7 +2278,11 @@ static void __sdfat_writepage_end_io(struct bio *bio, int err)
 
 		/* 4 MB = 1024 pages => 0.4 sec (approx.)
 		 * 32 KB =  64 pages => 0.025 sec
+<<<<<<< HEAD
 		 * Min. average latency b/fs/sdfat/w msgs. ~= 0.025 sec
+=======
+		 * Min. average latency b/w msgs. ~= 0.025 sec
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		 */
 		if ((sbi->stat_n_pages_written & 63) == 0) {
 			DMSG("STAT:%u, %u, %u, %u (Sector #: %u)\n",
@@ -2313,6 +2347,10 @@ static int __sdfat_create(struct inode *dir, struct dentry *dentry)
 {
 	struct super_block *sb = dir->i_sb;
 	struct inode *inode;
+<<<<<<< HEAD
+=======
+	struct timespec ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	FILE_ID_T fid;
 	loff_t i_pos;
 	int err;
@@ -2321,6 +2359,11 @@ static int __sdfat_create(struct inode *dir, struct dentry *dentry)
 
 	TMSG("%s entered\n", __func__);
 
+<<<<<<< HEAD
+=======
+	ts = CURRENT_TIME_SEC;
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	err = fsapi_create(dir, (u8 *) dentry->d_name.name, FM_REGULAR, &fid);
 	if (err)
 		goto out;
@@ -2328,7 +2371,11 @@ static int __sdfat_create(struct inode *dir, struct dentry *dentry)
 	__lock_d_revalidate(dentry);
 
 	dir->i_version++;
+<<<<<<< HEAD
 	dir->i_ctime = dir->i_mtime = dir->i_atime = current_time(dir);
+=======
+	dir->i_ctime = dir->i_mtime = dir->i_atime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	if (IS_DIRSYNC(dir))
 		(void) sdfat_sync_inode(dir);
 	else
@@ -2341,7 +2388,11 @@ static int __sdfat_create(struct inode *dir, struct dentry *dentry)
 		goto out;
 	}
 	inode->i_version++;
+<<<<<<< HEAD
 	inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+=======
+	inode->i_mtime = inode->i_atime = inode->i_ctime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	/* timestamp is already written, so mark_inode_dirty() is unneeded. */
 
 	d_instantiate(dentry, inode);
@@ -2430,11 +2481,15 @@ static struct dentry *__sdfat_lookup(struct inode *dir, struct dentry *dentry)
 		 * In such case, we reuse an alias instead of new dentry
 		 */
 		if (d_unhashed(alias)) {
+<<<<<<< HEAD
 #if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 			BUG_ON(alias->d_name.hash != dentry->d_name.hash && alias->d_name.len != dentry->d_name.len);
 #else
 			BUG_ON(alias->d_name.hash_len != dentry->d_name.hash_len);
 #endif
+=======
+			BUG_ON(alias->d_name.hash_len != dentry->d_name.hash_len);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 			sdfat_msg(sb, KERN_INFO, "rehashed a dentry(%p) "
 				"in read lookup", alias);
 			d_drop(dentry);
@@ -2475,12 +2530,21 @@ static int sdfat_unlink(struct inode *dir, struct dentry *dentry)
 {
 	struct inode *inode = dentry->d_inode;
 	struct super_block *sb = dir->i_sb;
+<<<<<<< HEAD
+=======
+	struct timespec ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	int err;
 
 	__lock_super(sb);
 
 	TMSG("%s entered\n", __func__);
 
+<<<<<<< HEAD
+=======
+	ts = CURRENT_TIME_SEC;
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	SDFAT_I(inode)->fid.size = i_size_read(inode);
 
 	__cancel_dfr_work(inode, 0, SDFAT_I(inode)->fid.size, __func__);
@@ -2492,14 +2556,22 @@ static int sdfat_unlink(struct inode *dir, struct dentry *dentry)
 	__lock_d_revalidate(dentry);
 
 	dir->i_version++;
+<<<<<<< HEAD
 	dir->i_mtime = dir->i_atime = current_time(dir);
+=======
+	dir->i_mtime = dir->i_atime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	if (IS_DIRSYNC(dir))
 		(void) sdfat_sync_inode(dir);
 	else
 		mark_inode_dirty(dir);
 
 	clear_nlink(inode);
+<<<<<<< HEAD
 	inode->i_mtime = inode->i_atime = current_time(inode);
+=======
+	inode->i_mtime = inode->i_atime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	sdfat_detach(inode);
 	dentry->d_time = dir->i_version;
 out:
@@ -2513,6 +2585,10 @@ static int sdfat_symlink(struct inode *dir, struct dentry *dentry, const char *t
 {
 	struct super_block *sb = dir->i_sb;
 	struct inode *inode;
+<<<<<<< HEAD
+=======
+	struct timespec ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	FILE_ID_T fid;
 	loff_t i_pos;
 	int err;
@@ -2527,6 +2603,11 @@ static int sdfat_symlink(struct inode *dir, struct dentry *dentry, const char *t
 
 	TMSG("%s entered\n", __func__);
 
+<<<<<<< HEAD
+=======
+	ts = CURRENT_TIME_SEC;
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	err = fsapi_create(dir, (u8 *) dentry->d_name.name, FM_SYMLINK, &fid);
 	if (err)
 		goto out;
@@ -2541,7 +2622,11 @@ static int sdfat_symlink(struct inode *dir, struct dentry *dentry, const char *t
 	__lock_d_revalidate(dentry);
 
 	dir->i_version++;
+<<<<<<< HEAD
 	dir->i_ctime = dir->i_mtime = dir->i_atime = current_time(dir);
+=======
+	dir->i_ctime = dir->i_mtime = dir->i_atime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	if (IS_DIRSYNC(dir))
 		(void) sdfat_sync_inode(dir);
 	else
@@ -2554,7 +2639,11 @@ static int sdfat_symlink(struct inode *dir, struct dentry *dentry, const char *t
 		goto out;
 	}
 	inode->i_version++;
+<<<<<<< HEAD
 	inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+=======
+	inode->i_mtime = inode->i_atime = inode->i_ctime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	/* timestamp is already written, so mark_inode_dirty() is unneeded. */
 
 	SDFAT_I(inode)->target = kmalloc((len+1), GFP_KERNEL);
@@ -2577,6 +2666,10 @@ static int __sdfat_mkdir(struct inode *dir, struct dentry *dentry)
 {
 	struct super_block *sb = dir->i_sb;
 	struct inode *inode;
+<<<<<<< HEAD
+=======
+	struct timespec ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	FILE_ID_T fid;
 	loff_t i_pos;
 	int err;
@@ -2585,6 +2678,11 @@ static int __sdfat_mkdir(struct inode *dir, struct dentry *dentry)
 
 	TMSG("%s entered\n", __func__);
 
+<<<<<<< HEAD
+=======
+	ts = CURRENT_TIME_SEC;
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	err = fsapi_mkdir(dir, (u8 *) dentry->d_name.name, &fid);
 	if (err)
 		goto out;
@@ -2592,7 +2690,11 @@ static int __sdfat_mkdir(struct inode *dir, struct dentry *dentry)
 	__lock_d_revalidate(dentry);
 
 	dir->i_version++;
+<<<<<<< HEAD
 	dir->i_ctime = dir->i_mtime = dir->i_atime = current_time(dir);
+=======
+	dir->i_ctime = dir->i_mtime = dir->i_atime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	if (IS_DIRSYNC(dir))
 		(void) sdfat_sync_inode(dir);
 	else
@@ -2606,7 +2708,11 @@ static int __sdfat_mkdir(struct inode *dir, struct dentry *dentry)
 		goto out;
 	}
 	inode->i_version++;
+<<<<<<< HEAD
 	inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+=======
+	inode->i_mtime = inode->i_atime = inode->i_ctime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	/* timestamp is already written, so mark_inode_dirty() is unneeded. */
 
 	d_instantiate(dentry, inode);
@@ -2625,12 +2731,21 @@ static int sdfat_rmdir(struct inode *dir, struct dentry *dentry)
 {
 	struct inode *inode = dentry->d_inode;
 	struct super_block *sb = dir->i_sb;
+<<<<<<< HEAD
+=======
+	struct timespec ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	int err;
 
 	__lock_super(sb);
 
 	TMSG("%s entered\n", __func__);
 
+<<<<<<< HEAD
+=======
+	ts = CURRENT_TIME_SEC;
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	SDFAT_I(inode)->fid.size = i_size_read(inode);
 
 	err = fsapi_rmdir(dir, &(SDFAT_I(inode)->fid));
@@ -2640,7 +2755,11 @@ static int sdfat_rmdir(struct inode *dir, struct dentry *dentry)
 	__lock_d_revalidate(dentry);
 
 	dir->i_version++;
+<<<<<<< HEAD
 	dir->i_mtime = dir->i_atime = current_time(dir);
+=======
+	dir->i_mtime = dir->i_atime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	if (IS_DIRSYNC(dir))
 		(void) sdfat_sync_inode(dir);
 	else
@@ -2648,7 +2767,11 @@ static int sdfat_rmdir(struct inode *dir, struct dentry *dentry)
 	drop_nlink(dir);
 
 	clear_nlink(inode);
+<<<<<<< HEAD
 	inode->i_mtime = inode->i_atime = current_time(inode);
+=======
+	inode->i_mtime = inode->i_atime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	sdfat_detach(inode);
 	dentry->d_time = dir->i_version;
 out:
@@ -2663,6 +2786,10 @@ static int __sdfat_rename(struct inode *old_dir, struct dentry *old_dentry,
 {
 	struct inode *old_inode, *new_inode;
 	struct super_block *sb = old_dir->i_sb;
+<<<<<<< HEAD
+=======
+	struct timespec ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	loff_t i_pos;
 	int err;
 
@@ -2673,6 +2800,11 @@ static int __sdfat_rename(struct inode *old_dir, struct dentry *old_dentry,
 	old_inode = old_dentry->d_inode;
 	new_inode = new_dentry->d_inode;
 
+<<<<<<< HEAD
+=======
+	ts = CURRENT_TIME_SEC;
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	SDFAT_I(old_inode)->fid.size = i_size_read(old_inode);
 
 	__cancel_dfr_work(old_inode, 0, 1, __func__);
@@ -2685,7 +2817,11 @@ static int __sdfat_rename(struct inode *old_dir, struct dentry *old_dentry,
 	__lock_d_revalidate(new_dentry);
 
 	new_dir->i_version++;
+<<<<<<< HEAD
 	new_dir->i_ctime = new_dir->i_mtime = new_dir->i_atime = current_time(new_dir);
+=======
+	new_dir->i_ctime = new_dir->i_mtime = new_dir->i_atime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	if (IS_DIRSYNC(new_dir))
 		(void) sdfat_sync_inode(new_dir);
 	else
@@ -2706,7 +2842,11 @@ static int __sdfat_rename(struct inode *old_dir, struct dentry *old_dentry,
 	}
 
 	old_dir->i_version++;
+<<<<<<< HEAD
 	old_dir->i_ctime = old_dir->i_mtime = current_time(old_dir);
+=======
+	old_dir->i_ctime = old_dir->i_mtime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	if (IS_DIRSYNC(old_dir))
 		(void) sdfat_sync_inode(old_dir);
 	else
@@ -2725,7 +2865,11 @@ static int __sdfat_rename(struct inode *old_dir, struct dentry *old_dentry,
 				__func__);
 			WARN_ON(new_inode->i_nlink == 0);
 		}
+<<<<<<< HEAD
 		new_inode->i_ctime = current_time(new_inode);
+=======
+		new_inode->i_ctime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 #if 0
 		(void) sdfat_sync_inode(new_inode);
 #endif
@@ -2749,7 +2893,11 @@ static int sdfat_cont_expand(struct inode *inode, loff_t size)
 	if (err)
 		return err;
 
+<<<<<<< HEAD
 	inode->i_ctime = inode->i_mtime = current_time(inode);
+=======
+	inode->i_ctime = inode->i_mtime = CURRENT_TIME_SEC;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	mark_inode_dirty(inode);
 
 	if (!IS_SYNC(inode))
@@ -2882,6 +3030,7 @@ static int sdfat_setattr(struct dentry *dentry, struct iattr *attr)
 	return error;
 }
 
+<<<<<<< HEAD
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
 static int sdfat_getattr(const struct path *path, struct kstat *stat, u32 request_mask, unsigned int flags)
 {
@@ -2891,6 +3040,11 @@ static int sdfat_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kst
 {
 	struct inode *inode = dentry->d_inode;
 #endif
+=======
+static int sdfat_getattr(struct vfsmount *mnt, struct dentry *dentry, struct kstat *stat)
+{
+	struct inode *inode = dentry->d_inode;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 	TMSG("%s entered\n", __func__);
 
@@ -2925,9 +3079,13 @@ static const struct inode_operations sdfat_dir_inode_operations = {
 /*  File Operations                                                     */
 /*======================================================================*/
 static const struct inode_operations sdfat_symlink_inode_operations = {
+<<<<<<< HEAD
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0)
 	.readlink    = generic_readlink,
 #endif
+=======
+	.readlink    = generic_readlink,
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 5, 0)
 	.get_link = sdfat_follow_link,
 #else /* LINUX_VERSION_CODE < KERNEL_VERSION(4, 5, 0) */
@@ -3010,7 +3168,11 @@ static void sdfat_truncate(struct inode *inode, loff_t old_size)
 	if (err)
 		goto out;
 
+<<<<<<< HEAD
 	inode->i_ctime = inode->i_mtime = current_time(inode);
+=======
+	inode->i_ctime = inode->i_mtime = CURRENT_TIME_SEC;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	if (IS_DIRSYNC(inode))
 		(void) sdfat_sync_inode(inode);
 	else
@@ -3444,11 +3606,15 @@ static inline void sdfat_submit_fullpage_bio(struct block_device *bdev,
 	 */
 	bio = bio_alloc(GFP_NOIO, 1);
 
+<<<<<<< HEAD
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,14,0)
 	bio_set_dev(bio, bdev);
 #else
 	bio->bi_bdev = bdev;
 #endif
+=======
+	bio->bi_bdev = bdev;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	bio->bi_vcnt = 1;
 	bio->bi_io_vec[0].bv_page = page;	/* Inline vec */
 	bio->bi_io_vec[0].bv_len = length;	/* PAGE_SIZE */
@@ -3539,11 +3705,15 @@ static int sdfat_writepage(struct page *page, struct writeback_control *wbc)
 
 			if (buffer_new(bh)) {
 				clear_buffer_new(bh);
+<<<<<<< HEAD
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 10, 0)
 				clean_bdev_bh_alias(bh);
 #else /* LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) */
 				unmap_underlying_metadata(bh->b_bdev, bh->b_blocknr);
 #endif
+=======
+				unmap_underlying_metadata(bh->b_bdev, bh->b_blocknr);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 			}
 		}
 
@@ -3719,7 +3889,11 @@ static int sdfat_write_end(struct file *file, struct address_space *mapping,
 		sdfat_write_failed(mapping, pos+len);
 
 	if (!(err < 0) && !(fid->attr & ATTR_ARCHIVE)) {
+<<<<<<< HEAD
 		inode->i_mtime = inode->i_ctime = current_time(inode);
+=======
+		inode->i_mtime = inode->i_ctime = CURRENT_TIME_SEC;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		fid->attr |= ATTR_ARCHIVE;
 		mark_inode_dirty(inode);
 	}
@@ -4464,12 +4638,15 @@ enum {
 	Opt_discard,
 	Opt_fs,
 	Opt_adj_req,
+<<<<<<< HEAD
 #ifdef CONFIG_SDFAT_USE_FOR_VFAT
 	Opt_shortname_lower,
 	Opt_shortname_win95,
 	Opt_shortname_winnt,
 	Opt_shortname_mixed,
 #endif /* CONFIG_SDFAT_USE_FOR_VFAT */
+=======
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 };
 
 static const match_table_t sdfat_tokens = {
@@ -4498,12 +4675,15 @@ static const match_table_t sdfat_tokens = {
 	{Opt_discard, "discard"},
 	{Opt_fs, "fs=%s"},
 	{Opt_adj_req, "adj_req"},
+<<<<<<< HEAD
 #ifdef CONFIG_SDFAT_USE_FOR_VFAT
 	{Opt_shortname_lower, "shortname=lower"},
 	{Opt_shortname_win95, "shortname=win95"},
 	{Opt_shortname_winnt, "shortname=winnt"},
 	{Opt_shortname_mixed, "shortname=mixed"},
 #endif /* CONFIG_SDFAT_USE_FOR_VFAT */
+=======
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	{Opt_err, NULL}
 };
 
@@ -4670,6 +4850,7 @@ static int parse_options(struct super_block *sb, char *options, int silent,
 			IMSG("adjust request config is not enabled. ignore\n");
 #endif
 			break;
+<<<<<<< HEAD
 #ifdef CONFIG_SDFAT_USE_FOR_VFAT
 		case Opt_shortname_lower:
 		case Opt_shortname_win95:
@@ -4678,6 +4859,8 @@ static int parse_options(struct super_block *sb, char *options, int silent,
 		case Opt_shortname_winnt:
 			break;
 #endif /* CONFIG_SDFAT_USE_FOR_VFAT */
+=======
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		default:
 			if (!silent) {
 				sdfat_msg(sb, KERN_ERR,
@@ -4725,9 +4908,18 @@ static int sdfat_read_root(struct inode *inode)
 {
 	struct super_block *sb = inode->i_sb;
 	struct sdfat_sb_info *sbi = SDFAT_SB(sb);
+<<<<<<< HEAD
 	FS_INFO_T *fsi = &(sbi->fsi);
 	DIR_ENTRY_T info;
 
+=======
+	struct timespec ts;
+	FS_INFO_T *fsi = &(sbi->fsi);
+	DIR_ENTRY_T info;
+
+	ts = CURRENT_TIME_SEC;
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	SDFAT_I(inode)->fid.dir.dir = fsi->root_dir;
 	SDFAT_I(inode)->fid.dir.flags = 0x01;
 	SDFAT_I(inode)->fid.entry = -1;
@@ -4736,7 +4928,11 @@ static int sdfat_read_root(struct inode *inode)
 	SDFAT_I(inode)->fid.type = TYPE_DIR;
 	SDFAT_I(inode)->fid.version = 0;
 	SDFAT_I(inode)->fid.rwoffset = 0;
+<<<<<<< HEAD
 	SDFAT_I(inode)->fid.hint_bmap.off = CLUS_EOF;
+=======
+	SDFAT_I(inode)->fid.hint_bmap.off = -1;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	SDFAT_I(inode)->fid.hint_stat.eidx = 0;
 	SDFAT_I(inode)->fid.hint_stat.clu = fsi->root_dir;
 	SDFAT_I(inode)->fid.hint_femp.eidx = -1;
@@ -4763,7 +4959,11 @@ static int sdfat_read_root(struct inode *inode)
 	SDFAT_I(inode)->i_size_ondisk = i_size_read(inode);
 
 	sdfat_save_attr(inode, ATTR_SUBDIR);
+<<<<<<< HEAD
 	inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+=======
+	inode->i_mtime = inode->i_atime = inode->i_ctime = ts;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	set_nlink(inode, info.NumSubdirs + 2);
 	return 0;
 }
@@ -4961,11 +5161,14 @@ static int __init sdfat_init_inodecache(void)
 
 static void sdfat_destroy_inodecache(void)
 {
+<<<<<<< HEAD
 	/*
 	 * Make sure all delayed rcu free inodes are flushed before we
 	 * destroy cache.
 	 */
 	rcu_barrier();
+=======
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	kmem_cache_destroy(sdfat_inode_cachep);
 }
 
@@ -5005,6 +5208,7 @@ static struct file_system_type sdfat_fs_type = {
 	.fs_flags    = FS_REQUIRES_DEV,
 };
 
+<<<<<<< HEAD
 #ifdef CONFIG_SDFAT_USE_FOR_EXFAT
 static struct file_system_type exfat_fs_type = {
 	.owner       = THIS_MODULE,
@@ -5033,6 +5237,8 @@ static struct file_system_type vfat_fs_type = {
 };
 #endif /* CONFIG_SDFAT_USE_FOR_VFAT */
 
+=======
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 static int __init init_sdfat_fs(void)
 {
 	int err;
@@ -5071,6 +5277,7 @@ static int __init init_sdfat_fs(void)
 		goto error;
 	}
 
+<<<<<<< HEAD
 #ifdef CONFIG_SDFAT_USE_FOR_EXFAT
 	err = register_filesystem(&exfat_fs_type);
 	if (err) {
@@ -5087,6 +5294,8 @@ static int __init init_sdfat_fs(void)
 	}
 #endif /* CONFIG_SDFAT_USE_FOR_VFAT */
 
+=======
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	return 0;
 error:
 	sdfat_statistics_uninit();
@@ -5116,12 +5325,16 @@ static void __exit exit_sdfat_fs(void)
 
 	sdfat_destroy_inodecache();
 	unregister_filesystem(&sdfat_fs_type);
+<<<<<<< HEAD
 #ifdef CONFIG_SDFAT_USE_FOR_EXFAT
 	unregister_filesystem(&exfat_fs_type);
 #endif /* CONFIG_SDFAT_USE_FOR_EXFAT */
 #ifdef CONFIG_SDFAT_USE_FOR_VFAT
 	unregister_filesystem(&vfat_fs_type);
 #endif /* CONFIG_SDFAT_USE_FOR_VFAT */
+=======
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	fsapi_shutdown();
 }
 
@@ -5131,3 +5344,7 @@ module_exit(exit_sdfat_fs);
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("FAT/exFAT filesystem support");
 MODULE_AUTHOR("Samsung Electronics Co., Ltd.");
+<<<<<<< HEAD
+=======
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver

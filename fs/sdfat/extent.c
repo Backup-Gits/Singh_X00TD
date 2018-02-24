@@ -47,15 +47,25 @@
 
 struct extent_cache {
 	struct list_head cache_list;
+<<<<<<< HEAD
 	u32 nr_contig;	/* number of contiguous clusters */
 	u32 fcluster;	/* cluster number in the file. */
+=======
+	s32 nr_contig;	/* number of contiguous clusters */
+	s32 fcluster;	/* cluster number in the file. */
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	u32 dcluster;	/* cluster number on disk. */
 };
 
 struct extent_cache_id {
 	u32 id;
+<<<<<<< HEAD
 	u32 nr_contig;
 	u32 fcluster;
+=======
+	s32 nr_contig;
+	s32 fcluster;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	u32 dcluster;
 };
 
@@ -116,16 +126,26 @@ static inline void extent_cache_update_lru(struct inode *inode,
 		list_move(&cache->cache_list, &extent->cache_lru);
 }
 
+<<<<<<< HEAD
 static u32 extent_cache_lookup(struct inode *inode, u32 fclus,
 			    struct extent_cache_id *cid,
 			    u32 *cached_fclus, u32 *cached_dclus)
+=======
+static s32 extent_cache_lookup(struct inode *inode, s32 fclus,
+			    struct extent_cache_id *cid,
+			    s32 *cached_fclus, u32 *cached_dclus)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	EXTENT_T *extent = &(SDFAT_I(inode)->fid.extent);
 
 	static struct extent_cache nohit = { .fcluster = 0, };
 
 	struct extent_cache *hit = &nohit, *p;
+<<<<<<< HEAD
 	u32 offset = CLUS_EOF;
+=======
+	s32 offset = -1;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 	spin_lock(&extent->cache_lru_lock);
 	list_for_each_entry(p, &extent->cache_lru, cache_list) {
@@ -261,7 +281,11 @@ static inline s32 cache_contiguous(struct extent_cache_id *cid, u32 dclus)
 	return ((cid->dcluster + cid->nr_contig) == dclus);
 }
 
+<<<<<<< HEAD
 static inline void cache_init(struct extent_cache_id *cid, u32 fclus, u32 dclus)
+=======
+static inline void cache_init(struct extent_cache_id *cid, s32 fclus, u32 dclus)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	cid->id = EXTENT_CACHE_VALID;
 	cid->fcluster = fclus;
@@ -269,12 +293,20 @@ static inline void cache_init(struct extent_cache_id *cid, u32 fclus, u32 dclus)
 	cid->nr_contig = 0;
 }
 
+<<<<<<< HEAD
 s32 extent_get_clus(struct inode *inode, u32 cluster, u32 *fclus,
+=======
+s32 extent_get_clus(struct inode *inode, s32 cluster, s32 *fclus,
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		u32 *dclus, u32 *last_dclus, s32 allow_eof)
 {
 	struct super_block *sb = inode->i_sb;
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
+<<<<<<< HEAD
 	u32 limit = fsi->num_clusters;
+=======
+	s32 limit = (s32)(fsi->num_clusters);
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	FILE_ID_T *fid = &(SDFAT_I(inode)->fid);
 	struct extent_cache_id cid;
 	u32 content;
@@ -287,6 +319,13 @@ s32 extent_get_clus(struct inode *inode, u32 cluster, u32 *fclus,
 		return -EIO;
 	}
 
+<<<<<<< HEAD
+=======
+	/* We allow max clusters per a file upto max of signed integer */
+	if (fsi->num_clusters & 0x80000000)
+		limit = 0x7FFFFFFF;
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	*fclus = 0;
 	*dclus = fid->start_clu;
 	*last_dclus = *dclus;
@@ -297,16 +336,27 @@ s32 extent_get_clus(struct inode *inode, u32 cluster, u32 *fclus,
 	if ((cluster == 0) || IS_CLUS_EOF(*dclus))
 		return 0;
 
+<<<<<<< HEAD
 	cache_init(&cid, CLUS_EOF, CLUS_EOF);
 
 	if (extent_cache_lookup(inode, cluster, &cid, fclus, dclus) == CLUS_EOF) {
+=======
+	cache_init(&cid, -1, -1);
+
+	if (extent_cache_lookup(inode, cluster, &cid, fclus, dclus) < 0) {
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		/*
 		 * dummy, always not contiguous
 		 * This is reinitialized by cache_init(), later.
 		 */
 		ASSERT((cid.id == EXTENT_CACHE_VALID)
+<<<<<<< HEAD
 			&& (cid.fcluster == CLUS_EOF)
 			&& (cid.dcluster == CLUS_EOF)
+=======
+			&& (cid.fcluster == -1)
+			&& (cid.dcluster == -1)
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 			&& (cid.nr_contig == 0));
 	}
 
@@ -318,7 +368,11 @@ s32 extent_get_clus(struct inode *inode, u32 cluster, u32 *fclus,
 		if (*fclus > limit) {
 			sdfat_fs_error(sb,
 				"%s: detected the cluster chain loop"
+<<<<<<< HEAD
 				" (i_pos %u)", __func__,
+=======
+				" (i_pos %d)", __func__,
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 				(*fclus));
 			return -EIO;
 		}
@@ -333,7 +387,11 @@ s32 extent_get_clus(struct inode *inode, u32 cluster, u32 *fclus,
 		if (IS_CLUS_EOF(content)) {
 			if (!allow_eof) {
 				sdfat_fs_error(sb,
+<<<<<<< HEAD
 				       "%s: invalid cluster chain (i_pos %u,"
+=======
+				       "%s: invalid cluster chain (i_pos %d,"
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 				       "last_clus 0x%08x is EOF)",
 				       __func__, *fclus, (*last_dclus));
 				return -EIO;

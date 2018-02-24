@@ -253,6 +253,7 @@ void sdfat_time_unix2fat(struct sdfat_sb_info *sbi, struct timespec *ts,
 
 TIMESTAMP_T *tm_now(struct sdfat_sb_info *sbi, TIMESTAMP_T *tp)
 {
+<<<<<<< HEAD
 	struct timespec ts;
 	DATE_TIME_T dt;
 
@@ -262,6 +263,11 @@ TIMESTAMP_T *tm_now(struct sdfat_sb_info *sbi, TIMESTAMP_T *tp)
 	ktime_get_real_ts(&ts);
 #endif
 
+=======
+	struct timespec ts = CURRENT_TIME_SEC;
+	DATE_TIME_T dt;
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	sdfat_time_unix2fat(sbi, &ts, &dt);
 
 	tp->year = dt.Year;
@@ -311,10 +317,16 @@ u32 sdfat_time_current_usec(struct timeval *tv)
 /* Check the consistency of i_size_ondisk (FAT32, or flags 0x01 only) */
 void sdfat_debug_check_clusters(struct inode *inode)
 {
+<<<<<<< HEAD
 	unsigned int num_clusters;
 	volatile uint32_t tmp_fat_chain[50];
 	volatile int tmp_i = 0;
 	volatile unsigned int num_clusters_org, tmp_i = 0;
+=======
+	int num_clusters;
+	volatile uint32_t tmp_fat_chain[50];
+	volatile int num_clusters_org, tmp_i = 0;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	CHAIN_T clu;
 	FILE_ID_T *fid = &(SDFAT_I(inode)->fid);
 	FS_INFO_T *fsi = &(SDFAT_SB(inode->i_sb)->fsi);
@@ -322,7 +334,11 @@ void sdfat_debug_check_clusters(struct inode *inode)
 	if (SDFAT_I(inode)->i_size_ondisk == 0)
 		num_clusters = 0;
 	else
+<<<<<<< HEAD
 		num_clusters = ((SDFAT_I(inode)->i_size_ondisk-1) >> fsi->cluster_size_bits) + 1;
+=======
+		num_clusters = (s32)((SDFAT_I(inode)->i_size_ondisk-1) >> fsi->cluster_size_bits) + 1;
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 	clu.dir = fid->start_clu;
 	clu.size = num_clusters;
@@ -384,3 +400,7 @@ void __sdfat_dmsg(int level, const char *fmt, ...)
 #endif
 }
 #endif
+<<<<<<< HEAD
+=======
+
+>>>>>>> e29abeb7fc47... fs: Import sdFAT driver
