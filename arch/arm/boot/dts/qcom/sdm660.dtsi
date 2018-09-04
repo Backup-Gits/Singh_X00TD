@@ -899,7 +899,7 @@
 			qcom,high-threshold-uamp = <4200000>;
 			qcom,vph-high-threshold-uv = <3500000>;
 			qcom,vph-low-threshold-uv = <3300000>;
-			qcom,soc-low-threshold = <5>;
+			qcom,soc-low-threshold = <10>;
 		};
 	};
 
@@ -1410,11 +1410,6 @@
 			< 1843200 >;
 
 		qcom,cpufreq-table-4 =
-<<<<<<< HEAD
-			<  633600 >,
-			<  902400 >,
-=======
->>>>>>> parent of 823a19620779... removing conflict with last commit
 			< 1113600 >,
 			< 1401600 >,
 			< 1747200 >,
