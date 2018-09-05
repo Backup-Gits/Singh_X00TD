@@ -1231,10 +1231,4 @@ source "drivers/input/touchscreen/synaptics_dsx/Kconfig"
 #Huaqin modify for ZQL1650-1357 by diganyun at 2018/05/22 end
 source "drivers/input/touchscreen/focaltech_touch/Kconfig"
 
-config SWEEP2SLEEP
-        tristate "Sweep to put device to sleep"
-        default y
-        help
-          Say Y here to support sweep2sleep
-
 endif
