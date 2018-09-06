@@ -499,7 +499,7 @@ config FINGERPRINT_BOOST
 	bool "Fingerprint Boost"
 	default y
 	help
-	  Boosts available CPUs to max frequency on fingerprint sensor input
+	  Boosts available CPUs to max frequency on fingerprint sensor input.
 
 
 if X86
