@@ -13,17 +13,10 @@ sdfat_fs-$(CONFIG_SDFAT_STATISTICS) += statistics.o
 
 
 all:
-<<<<<<< HEAD
 	make -C /lib/fs/sdfat/modules/$(shell uname -r)/build M=$(PWD) modules
 
 clean:
 	make -C /lib/fs/sdfat/modules/$(shell uname -r)/build M=$(PWD) clean
-=======
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
-
-clean:
-	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 cscope:
 	rm -rf cscope.files cscope.files

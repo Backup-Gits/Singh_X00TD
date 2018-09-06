@@ -80,17 +80,10 @@
 	& ((1 << (fsi)->sect_per_clus_bits) - 1)) == 0)
 
 #define CLUS_TO_SECT(fsi, x)	\
-<<<<<<< HEAD
 	((((unsigned long long)(x) - CLUS_BASE) << (fsi)->sect_per_clus_bits) + (fsi)->data_start_sector)
 
 #define SECT_TO_CLUS(fsi, sec)	\
 	((u32)((((sec) - (fsi)->data_start_sector) >> (fsi)->sect_per_clus_bits) + CLUS_BASE))
-=======
-	((((x) - CLUS_BASE) << (fsi)->sect_per_clus_bits) + (fsi)->data_start_sector)
-
-#define SECT_TO_CLUS(fsi, sec)	\
-	((((sec) - (fsi)->data_start_sector) >> (fsi)->sect_per_clus_bits) + CLUS_BASE)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 /* variables defined at sdfat.c */
 extern const char *FS_TYPE_STR[];
@@ -400,10 +393,7 @@ void sdfat_debug_check_clusters(struct inode *inode);
 
 #define sdfat_debug_check_clusters(inode)
 #define sdfat_debug_bug_on(expr)
-<<<<<<< HEAD
 #define sdfat_debug_warn_on(expr)
-=======
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 #endif /* CONFIG_SDFAT_DEBUG */
 

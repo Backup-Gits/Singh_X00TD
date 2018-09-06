@@ -119,22 +119,13 @@ typedef struct {
 } DATE_TIME_T;
 
 typedef struct {
-<<<<<<< HEAD
 	u64      Offset;    // start sector number of the partition
 	u64      Size;      // in sectors
-=======
-	u32      Offset;    // start sector number of the partition
-	u32      Size;      // in sectors
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 } PART_INFO_T;
 
 typedef struct {
 	u32      SecSize;    // sector size in bytes
-<<<<<<< HEAD
 	u64      DevSize;    // block device size in sectors
-=======
-	u32      DevSize;    // block device size in sectors
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 } DEV_INFO_T;
 
 typedef struct {
@@ -148,11 +139,7 @@ typedef struct {
 /* directory structure */
 typedef struct {
 	u32      dir;
-<<<<<<< HEAD
 	u32      size;
-=======
-	s32      size;
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	u8       flags;
 } CHAIN_T;
 
@@ -160,11 +147,7 @@ typedef struct {
 typedef struct {
 	u32      clu;
 	union {
-<<<<<<< HEAD
 		u32 off;     // cluster offset
-=======
-		s32 off;     // cluster offset
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		s32 eidx;    // entry index
 	};
 } HINT_T;
@@ -226,11 +209,7 @@ typedef struct __cache_entry {
 		struct __cache_entry *next;
 		struct __cache_entry *prev;
 	} hash;
-<<<<<<< HEAD
 	u64 sec;
-=======
-	u32 sec;
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	u32 flag;
 	struct buffer_head   *bh;
 } cache_ent_t;
@@ -244,11 +223,7 @@ typedef struct __FATENT_OPS_T {
 } FATENT_OPS_T;
 
 typedef struct {
-<<<<<<< HEAD
 	s32      (*alloc_cluster)(struct super_block *, u32, CHAIN_T *, s32);
-=======
-	s32      (*alloc_cluster)(struct super_block *, s32, CHAIN_T *, int);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	s32      (*free_cluster)(struct super_block *, CHAIN_T *, s32);
 	s32      (*count_used_clusters)(struct super_block *, u32 *);
 	s32      (*init_dir_entry)(struct super_block *, CHAIN_T *, s32, u32, u32, u64);
@@ -278,27 +253,16 @@ typedef struct __FS_INFO_T {
 	s32	 bd_opened;              // opened or not
 	u32      vol_type;               // volume FAT type
 	u32      vol_id;                 // volume serial number
-<<<<<<< HEAD
 	u64      num_sectors;            // num of sectors in volume
-=======
-	u32      num_sectors;            // num of sectors in volume
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	u32      num_clusters;           // num of clusters in volume
 	u32      cluster_size;           // cluster size in bytes
 	u32      cluster_size_bits;
 	u32      sect_per_clus;        // cluster size in sectors
 	u32      sect_per_clus_bits;
-<<<<<<< HEAD
 	u64      FAT1_start_sector;      // FAT1 start sector
 	u64      FAT2_start_sector;      // FAT2 start sector
 	u64      root_start_sector;      // root dir start sector
 	u64      data_start_sector;      // data area start sector
-=======
-	u32      FAT1_start_sector;      // FAT1 start sector
-	u32      FAT2_start_sector;      // FAT2 start sector
-	u32      root_start_sector;      // root dir start sector
-	u32      data_start_sector;      // data area start sector
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	u32      num_FAT_sectors;        // num of FAT sectors
 	u32      root_dir;               // root dir cluster
 	u32      dentries_in_root;       // num of dentries in root dir
@@ -373,11 +337,7 @@ s32 fsapi_rename(struct inode *old_parent_inode, FILE_ID_T *fid,
 s32 fsapi_unlink(struct inode *inode, FILE_ID_T *fid);
 s32 fsapi_read_inode(struct inode *inode, DIR_ENTRY_T *info);
 s32 fsapi_write_inode(struct inode *inode, DIR_ENTRY_T *info, int sync);
-<<<<<<< HEAD
 s32 fsapi_map_clus(struct inode *inode, u32 clu_offset, u32 *clu, int dest);
-=======
-s32 fsapi_map_clus(struct inode *inode, s32 clu_offset, u32 *clu, int dest);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 s32 fsapi_reserve_clus(struct inode *inode);
 
 /* directory management functions */

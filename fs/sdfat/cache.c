@@ -53,7 +53,6 @@
 /*----------------------------------------------------------------------*/
 /*  Cache handling function declarations                                */
 /*----------------------------------------------------------------------*/
-<<<<<<< HEAD
 static cache_ent_t *__fcache_find(struct super_block *sb, u64 sec);
 static cache_ent_t *__fcache_get(struct super_block *sb);
 static void __fcache_insert_hash(struct super_block *sb, cache_ent_t *bp);
@@ -61,15 +60,6 @@ static void __fcache_remove_hash(cache_ent_t *bp);
 
 static cache_ent_t *__dcache_find(struct super_block *sb, u64 sec);
 static cache_ent_t *__dcache_get(struct super_block *sb);
-=======
-static cache_ent_t *__fcache_find(struct super_block *sb, u32 sec);
-static cache_ent_t *__fcache_get(struct super_block *sb, u32 sec);
-static void __fcache_insert_hash(struct super_block *sb, cache_ent_t *bp);
-static void __fcache_remove_hash(cache_ent_t *bp);
-
-static cache_ent_t *__dcache_find(struct super_block *sb, u32 sec);
-static cache_ent_t *__dcache_get(struct super_block *sb, u32 sec);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 static void __dcache_insert_hash(struct super_block *sb, cache_ent_t *bp);
 static void __dcache_remove_hash(cache_ent_t *bp);
 
@@ -136,7 +126,6 @@ static inline void __remove_from_hash(cache_ent_t *bp)
  * sec: sector No. in FAT1
  * bh:  bh of sec.
  */
-<<<<<<< HEAD
 static inline s32 __fat_copy(struct super_block *sb, u64 sec, struct buffer_head *bh, int sync)
 {
 #ifdef CONFIG_SDFAT_FAT_MIRRORING
@@ -148,19 +137,6 @@ static inline s32 __fat_copy(struct super_block *sb, u64 sec, struct buffer_head
 		BUG_ON(sec2 != (sec + (u64)fsi->num_FAT_sectors));
 
 		MMSG("BD: fat mirroring (%llu in FAT1, %llu in FAT2)\n", sec, sec2);
-=======
-static inline s32 __fat_copy(struct super_block *sb, u32 sec, struct buffer_head *bh, int sync)
-{
-#ifdef CONFIG_SDFAT_FAT_MIRRORING
-	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
-	int sec2;
-
-	if (fsi->FAT2_start_sector != fsi->FAT1_start_sector) {
-		sec2 = sec - fsi->FAT1_start_sector + fsi->FAT2_start_sector;
-		BUG_ON(sec2 != (sec + fsi->num_FAT_sectors));
-
-		MMSG("BD: fat mirroring (%d in FAT1, %d in FAT2)\n", sec, sec2);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		if (write_sect(sb, sec2, bh, sync))
 			return -EIO;
 	}
@@ -211,11 +187,7 @@ static s32 __fcache_ent_discard(struct super_block *sb, cache_ent_t *bp)
 	return 0;
 }
 
-<<<<<<< HEAD
 u8 *fcache_getblk(struct super_block *sb, u64 sec)
-=======
-u8 *fcache_getblk(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	cache_ent_t *bp;
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
@@ -232,11 +204,7 @@ u8 *fcache_getblk(struct super_block *sb, u32 sec)
 		return bp->bh->b_data;
 	}
 
-<<<<<<< HEAD
 	bp = __fcache_get(sb);
-=======
-	bp = __fcache_get(sb, sec);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 	if (!__check_hash_valid(bp))
 		__fcache_remove_hash(bp);
 
@@ -246,11 +214,7 @@ u8 *fcache_getblk(struct super_block *sb, u32 sec)
 
 	/* Naive FAT read-ahead (increase I/O unit to page_ra_count) */
 	if ((sec & (page_ra_count - 1)) == 0)
-<<<<<<< HEAD
 		bdev_readahead(sb, sec, (u64)page_ra_count);
-=======
-		bdev_readahead(sb, sec, page_ra_count);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 	/*
 	 * patch 1.2.4 : buffer_head null pointer exception problem.
@@ -283,21 +247,13 @@ static inline int __mark_delayed_dirty(struct super_block *sb, cache_ent_t *bp)
 
 
 
-<<<<<<< HEAD
 s32 fcache_modify(struct super_block *sb, u64 sec)
-=======
-s32 fcache_modify(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	cache_ent_t *bp;
 
 	bp = __fcache_find(sb, sec);
 	if (!bp) {
-<<<<<<< HEAD
 		sdfat_fs_error(sb, "Can`t find fcache (sec 0x%016llx)", sec);
-=======
-		sdfat_fs_error(sb, "Can`t find fcache (sec 0x%08x)", sec);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		return -EIO;
 	}
 
@@ -434,11 +390,7 @@ s32 fcache_flush(struct super_block *sb, u32 sync)
 	return ret;
 }
 
-<<<<<<< HEAD
 static cache_ent_t *__fcache_find(struct super_block *sb, u64 sec)
-=======
-static cache_ent_t *__fcache_find(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	s32 off;
 	cache_ent_t *bp, *hp;
@@ -461,11 +413,7 @@ static cache_ent_t *__fcache_find(struct super_block *sb, u32 sec)
 	return NULL;
 }
 
-<<<<<<< HEAD
 static cache_ent_t *__fcache_get(struct super_block *sb)
-=======
-static cache_ent_t *__fcache_get(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	cache_ent_t *bp;
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
@@ -525,11 +473,7 @@ static void __fcache_remove_hash(cache_ent_t *bp)
 /*  Buffer Read/Write Functions                                         */
 /*======================================================================*/
 /* Read-ahead a cluster */
-<<<<<<< HEAD
 s32 dcache_readahead(struct super_block *sb, u64 sec)
-=======
-s32 dcache_readahead(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 	struct buffer_head *bh;
@@ -543,11 +487,7 @@ s32 dcache_readahead(struct super_block *sb, u32 sec)
 		return 0;
 
 	if (sec < fsi->data_start_sector) {
-<<<<<<< HEAD
 		EMSG("BD: %s: requested sector is invalid(sect:%llu, root:%llu)\n",
-=======
-		EMSG("BD: %s: requested sector is invalid(sect:%u, root:%u)\n",
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 				__func__, sec, fsi->data_start_sector);
 		return -EIO;
 	}
@@ -558,11 +498,7 @@ s32 dcache_readahead(struct super_block *sb, u32 sec)
 
 	bh = sb_find_get_block(sb, sec);
 	if (!bh || !buffer_uptodate(bh))
-<<<<<<< HEAD
 		bdev_readahead(sb, sec, (u64)ra_count);
-=======
-		bdev_readahead(sb, sec, ra_count);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 	brelse(bh);
 
@@ -595,11 +531,7 @@ static s32 __dcache_ent_discard(struct super_block *sb, cache_ent_t *bp)
 {
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
 
-<<<<<<< HEAD
 	MMSG("%s : bp[%p] (sec:%016llx flag:%08x bh:%p) list(prev:%p next:%p) "
-=======
-	MMSG("%s : bp[%p] (sec:%08x flag:%08x bh:%p) list(prev:%p next:%p) "
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		"hash(prev:%p next:%p)\n", __func__,
 		bp, bp->sec, bp->flag, bp->bh, bp->prev, bp->next,
 		bp->hash.prev, bp->hash.next);
@@ -617,11 +549,7 @@ static s32 __dcache_ent_discard(struct super_block *sb, cache_ent_t *bp)
 	return 0;
 }
 
-<<<<<<< HEAD
 u8 *dcache_getblk(struct super_block *sb, u64 sec)
-=======
-u8 *dcache_getblk(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	cache_ent_t *bp;
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
@@ -629,11 +557,7 @@ u8 *dcache_getblk(struct super_block *sb, u32 sec)
 	bp = __dcache_find(sb, sec);
 	if (bp) {
 		if (bdev_check_bdi_valid(sb)) {
-<<<<<<< HEAD
 			MMSG("%s: found cache(%p, sect:%llu). But invalid BDI\n"
-=======
-			MMSG("%s: found cache(%p, sect:%u). But invalid BDI\n"
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 				, __func__, bp, sec);
 			__dcache_ent_flush(sb, bp, 0);
 			__dcache_ent_discard(sb, bp);
@@ -646,11 +570,7 @@ u8 *dcache_getblk(struct super_block *sb, u32 sec)
 		return bp->bh->b_data;
 	}
 
-<<<<<<< HEAD
 	bp = __dcache_get(sb);
-=======
-	bp = __dcache_get(sb, sec);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 
 	if (!__check_hash_valid(bp))
 		__dcache_remove_hash(bp);
@@ -668,11 +588,7 @@ u8 *dcache_getblk(struct super_block *sb, u32 sec)
 
 }
 
-<<<<<<< HEAD
 s32 dcache_modify(struct super_block *sb, u64 sec)
-=======
-s32 dcache_modify(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	s32 ret = -EIO;
 	cache_ent_t *bp;
@@ -681,11 +597,7 @@ s32 dcache_modify(struct super_block *sb, u32 sec)
 
 	bp = __dcache_find(sb, sec);
 	if (unlikely(!bp)) {
-<<<<<<< HEAD
 		sdfat_fs_error(sb, "Can`t find dcache (sec 0x%016llx)", sec);
-=======
-		sdfat_fs_error(sb, "Can`t find dcache (sec 0x%08x)", sec);
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 		return -EIO;
 	}
 #ifdef CONFIG_SDFAT_DELAYED_META_DIRTY
@@ -697,22 +609,14 @@ s32 dcache_modify(struct super_block *sb, u32 sec)
 	ret = write_sect(sb, sec, bp->bh, 0);
 
 	if (ret) {
-<<<<<<< HEAD
 		DMSG("%s : failed to modify buffer(err:%d, sec:%llu, bp:0x%p)\n",
-=======
-		DMSG("%s : failed to modify buffer(err:%d, sec:%u, bp:0x%p)\n",
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 			__func__, ret, sec, bp);
 	}
 
 	return ret;
 }
 
-<<<<<<< HEAD
 s32 dcache_lock(struct super_block *sb, u64 sec)
-=======
-s32 dcache_lock(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	cache_ent_t *bp;
 
@@ -722,19 +626,11 @@ s32 dcache_lock(struct super_block *sb, u32 sec)
 		return 0;
 	}
 
-<<<<<<< HEAD
 	EMSG("%s : failed to lock buffer(sec:%llu, bp:0x%p)\n", __func__, sec, bp);
 	return -EIO;
 }
 
 s32 dcache_unlock(struct super_block *sb, u64 sec)
-=======
-	EMSG("%s : failed to lock buffer(sec:%u, bp:0x%p)\n", __func__, sec, bp);
-	return -EIO;
-}
-
-s32 dcache_unlock(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	cache_ent_t *bp;
 
@@ -744,19 +640,11 @@ s32 dcache_unlock(struct super_block *sb, u32 sec)
 		return 0;
 	}
 
-<<<<<<< HEAD
 	EMSG("%s : failed to unlock buffer (sec:%llu, bp:0x%p)\n", __func__, sec, bp);
 	return -EIO;
 }
 
 s32 dcache_release(struct super_block *sb, u64 sec)
-=======
-	EMSG("%s : failed to unlock buffer (sec:%u, bp:0x%p)\n", __func__, sec, bp);
-	return -EIO;
-}
-
-s32 dcache_release(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	cache_ent_t *bp;
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
@@ -867,11 +755,7 @@ s32 dcache_flush(struct super_block *sb, u32 sync)
 	return ret;
 }
 
-<<<<<<< HEAD
 static cache_ent_t *__dcache_find(struct super_block *sb, u64 sec)
-=======
-static cache_ent_t *__dcache_find(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	s32 off;
 	cache_ent_t *bp, *hp;
@@ -889,11 +773,7 @@ static cache_ent_t *__dcache_find(struct super_block *sb, u32 sec)
 	return NULL;
 }
 
-<<<<<<< HEAD
 static cache_ent_t *__dcache_get(struct super_block *sb)
-=======
-static cache_ent_t *__dcache_get(struct super_block *sb, u32 sec)
->>>>>>> e29abeb7fc47... fs: Import sdFAT driver
 {
 	cache_ent_t *bp;
 	FS_INFO_T *fsi = &(SDFAT_SB(sb)->fsi);
