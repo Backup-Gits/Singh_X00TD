@@ -790,8 +790,7 @@ CONFIG_FUNCTION_TRACER=y
 
 
 # Additions from mpschahal16
-#usb fast charge
-CONFIG_FORCE_FAST_CHARGE=y
+
 
 #finger print 
 CONFIG_FINGERPRINT_BOOST=y
