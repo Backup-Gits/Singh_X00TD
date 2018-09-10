@@ -52,6 +52,7 @@ Module.symvers
 /Module.markers
 
 build.sh
+clang.sh
 #
 # Debian directory (make deb-pkg)
 #
