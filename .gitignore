@@ -52,6 +52,7 @@ X00TD_Singh_defconfigt
 /Module.markers
 
 build.sh
+buildt.sh
 #
 # Debian directory (make deb-pkg)
 #
