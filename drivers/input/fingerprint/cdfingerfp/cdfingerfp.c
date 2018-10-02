@@ -388,7 +388,7 @@ static int cdfinger_eint_gpio_init(struct cdfingerfp_data *pdata)
 
 static void cdfinger_wake_lock(struct cdfingerfp_data *pdata,int arg)
 {
-	CDFINGER_DBG("cdfinger_wake_lock enter----------\n");
+	//CDFINGER_DBG("cdfinger_wake_lock enter----------\n");
 	if(arg)
 	{
 		wake_lock(&pdata->cdfinger_lock);
