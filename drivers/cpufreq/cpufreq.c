@@ -2260,8 +2260,7 @@ static int cpufreq_set_policy(struct cpufreq_policy *policy,
 
 	scale_freq_capacity(new_policy, NULL);
 
-	/*policy->min = new_policy->min;*/
-	policy->min = 633600;
+	policy->min = new_policy->min;
 	policy->max = new_policy->max;
 	trace_cpu_frequency_limits(policy->max, policy->min, policy->cpu);
 
