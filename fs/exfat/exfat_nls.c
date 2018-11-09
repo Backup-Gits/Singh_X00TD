@@ -87,7 +87,7 @@ u16 nls_upper(struct super_block *sb, u16 a)
 		return a;
 }
 
-u16 *nls_wstrchr(u16 *str, u16 wchar)
+u16 *nls_wstrchrm(u16 *str, u16 wchar)
 {
 	while (*str) {
 		if (*(str++) == wchar)
@@ -174,7 +174,7 @@ void nls_uniname_to_dosname(struct super_block *sb, DOS_NAME_T *p_dosname, UNI_N
 				lossy = TRUE;
 			else
 				i = 8;
-		} else if (nls_wstrchr(bad_dos_chars, *uniname)) {
+		} else if (nls_wstrchrm(bad_dos_chars, *uniname)) {
 			lossy = TRUE;
 			*(dosname+i) = '_';
 			i++;
@@ -370,7 +370,7 @@ void nls_cstring_to_uniname(struct super_block *sb, UNI_NAME_T *p_uniname, u8 *p
 
 			i += convert_ch_to_uni(nls, uniname, (u8 *)(p_cstring+i), &lossy);
 
-			if ((*uniname < 0x0020) || nls_wstrchr(bad_uni_chars, *uniname))
+			if ((*uniname < 0x0020) || nls_wstrchrm(bad_uni_chars, *uniname))
 				lossy = TRUE;
 
 			SET16_A(upname + j * 2, nls_upper(sb, *uniname));
