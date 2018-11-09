@@ -2248,7 +2248,7 @@ static void __sdfat_writepage_end_io(struct bio *bio, int err)
 
 		/* 4 MB = 1024 pages => 0.4 sec (approx.)
 		 * 32 KB =  64 pages => 0.025 sec
-		 * Min. average latency b/fs/sdfat/w msgs. ~= 0.025 sec
+		 * Min. average latency b/w msgs. ~= 0.025 sec
 		 */
 		if ((sbi->stat_n_pages_written & 63) == 0) {
 			DMSG("STAT:%u, %u, %u, %u (Sector #: %u)\n",
