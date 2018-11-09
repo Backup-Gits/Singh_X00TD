@@ -2572,15 +2572,10 @@ void read_BR_countrycode_work(struct work_struct *work)
 
 	fp = filp_open(COUNTRY_CODE_PATH, O_RDONLY, 0);
 	if (IS_ERR_OR_NULL(fp)) {
-		fp = filp_open("/system/countrycode.txt", O_RDONLY, 0);
-		if (IS_ERR_OR_NULL(fp))
-		{
-			printk("[BAT][CHG] OPEN (%s) failed !! \n", COUNTRY_CODE_PATH);
-			if(--cnt >=0)
-				schedule_delayed_work(&smbchg_dev->read_countrycode_work, msecs_to_jiffies(3000));
-			return ;	/*No such file or directory*/
-		}
-        
+        printk("[BAT][CHG] OPEN (%s) failed !! \n", COUNTRY_CODE_PATH);
+		if(--cnt >=0)
+			schedule_delayed_work(&smbchg_dev->read_countrycode_work, msecs_to_jiffies(3000));
+		return ;	/*No such file or directory*/
 	}
 	/* For purpose that can use read/write system call */
 	if (fp->f_op != NULL) {
