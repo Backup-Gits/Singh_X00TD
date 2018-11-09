@@ -2570,9 +2570,9 @@ void read_BR_countrycode_work(struct work_struct *work)
     int readlen = 0;
 	int cnt = 5;
 
-	fp = filp_open("/system/countrycode.txt", O_RDONLY, 0);
+	fp = filp_open(COUNTRY_CODE_PATH, O_RDONLY, 0);
 	if (IS_ERR_OR_NULL(fp)) {
-		fp = filp_open(COUNTRY_CODE_PATH, O_RDONLY, 0);
+		fp = filp_open("/system/countrycode.txt", O_RDONLY, 0);
 		if (IS_ERR_OR_NULL(fp))
 		{
 			printk("[BAT][CHG] OPEN (%s) failed !! \n", COUNTRY_CODE_PATH);
